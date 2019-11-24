@@ -8,6 +8,7 @@
 import numpy as np
 import pandas as pd
 import re
+import xgboost
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
@@ -17,6 +18,7 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.model_selection import train_test_split
 from scipy.spatial.distance import cosine
+
 
 
 # In[2]:
@@ -112,15 +114,15 @@ months1.tail()
 freq1={}
 for i in customers.CUSTOMER_ID.unique():
     freq1[i]=len(months1[months1['CUSTOMER_ID']==i])
-    
+
 freq2={}
 for i in customers.CUSTOMER_ID.unique():
     freq2[i]=len(months2[months2['CUSTOMER_ID']==i])
-    
+
 freq3={}
 for i in customers.CUSTOMER_ID.unique():
     freq3[i]=len(months3[months3['CUSTOMER_ID']==i])
-    
+
 freq6={}
 for i in customers.CUSTOMER_ID.unique():
     freq6[i]=len(months6[months6['CUSTOMER_ID']==i])
@@ -143,11 +145,11 @@ for i in customers.CUSTOMER_ID.unique():
 spends1={}
 for i in customers.CUSTOMER_ID.unique():
     spends1[i]=int(months1[months1['CUSTOMER_ID']==i]['UNIT_PRICE'].sum())
-    
+
 spends2={}
 for i in customers.CUSTOMER_ID.unique():
     spends2[i]=int(months2[months2['CUSTOMER_ID']==i]['UNIT_PRICE'].sum())
-    
+
 spends3={}
 for i in customers.CUSTOMER_ID.unique():
     spends3[i]=int(months3[months3['CUSTOMER_ID']==i]['UNIT_PRICE'].sum())
@@ -565,7 +567,7 @@ data_ibs.head(3)
 
 
 data_neighbours = pd.DataFrame(index=data_ibs.columns,columns=range(1,11))
- 
+
 for i in range(0,len(data_ibs.columns)):
     data_neighbours.iloc[i,:10] = data_ibs.iloc[0:,i].sort_values(ascending=False)[:10].index
 
@@ -628,7 +630,7 @@ for i in range(0,len(data_sims.index)):
             product_top_names = data_neighbours.loc[str(data_sims.columns[j])][:10]
             product_top_sims = data_ibs.loc[product].sort_values(ascending=False)[:10]
             user_purchases = matrix.drop(['User'],axis=1).loc[user,product_top_names]
- 
+
             data_sims.iloc[i][j] = getScore(user_purchases,product_top_sims)
 
 
@@ -644,7 +646,7 @@ data_recommend.iloc[0:,0] = data_sims.iloc[:,0]
 
 for i in range(0,len(data_sims.index)):
     data_recommend.iloc[i,1:] = data_sims.iloc[i,:].sort_values(ascending=False).iloc[1:7,].index.transpose()
- 
+
 
 
 # In[546]:
@@ -670,4 +672,3 @@ return_customer.to_csv('/Users/shashank/Desktop/ReturnCustomer&Recommendations.c
 
 
 return_customer
-
